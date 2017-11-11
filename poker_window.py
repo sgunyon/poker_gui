@@ -1,11 +1,10 @@
 #! /usr/bin/python
 
-import random
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from score import Score
-
+from cards import *
 
 
 class PokerWindow(QMainWindow):
@@ -19,25 +18,21 @@ class PokerWindow(QMainWindow):
         self.mainWidget.setLayout(self.grid)
 
         # The five cards: each has a rank and a suit.
-        self.ranks = [None, None, None, None, None]
-        self.suits = [None, None, None, None, None]
+        self.hand_ranks = [None, None, None, None, None]
+        self.hand_suits = [None, None, None, None, None]
         self.score_ranks = []
         self.score_suits = []
 
-        # Possible suits:
-        self.suitnames = ["Diamonds", "Spades", "Hearts", "Clubs"]
-
-        # Possible ranks:
-        self.ranknames = ["2", "3", "4", "5", "6", "7", "8",
-                          "9", "10", "J", "Q", "K", "A"]
+        self.deck = Deck()
+        self.deck.shuffle()
 
         # Create the labels for the card ranks and suits:
-        for i in range(0, len(self.ranks)):
-            self.ranks[i] = QLabel()
-            self.grid.addWidget(self.ranks[i], 0, i)
+        for i in range(0, len(self.hand_ranks)):
+            self.hand_ranks[i] = QLabel()
+            self.grid.addWidget(self.hand_ranks[i], 0, i)
 
-            self.suits[i] = QLabel()
-            self.grid.addWidget(self.suits[i], 1, i)
+            self.hand_suits[i] = QLabel()
+            self.grid.addWidget(self.hand_suits[i], 1, i)
 
         # "Deal" button
         self.dealbutton = QPushButton("Deal")
@@ -65,31 +60,28 @@ class PokerWindow(QMainWindow):
         self.font.setPointSize(self.font.pointSize() * 2)
 
         # Create the labels for the card ranks and suits:
-        for i in range(0, len(self.ranks)):
-            self.ranks[i].setFont(self.font)
-            self.ranks[i].setAlignment(Qt.AlignCenter)
+        for i in range(0, len(self.hand_ranks)):
+            self.hand_ranks[i].setFont(self.font)
+            self.hand_ranks[i].setAlignment(Qt.AlignCenter)
 
     def deal_new_hand(self):
-        self.score_ranks = []
-        self.score_suits =  []
-        for i in range(0, 5):
-            rank = random.randint(0, 12)
-            self.ranks[i].setText(self.ranknames[rank])
-            self.score_ranks.append(int(rank)+2)
 
-            suit = random.randint(0, 3)
-            self.score_suits.append(self.suitnames[suit])
-            if self.suitpixmaps[suit].isNull():
-                self.suits[i].setText(self.suitnames[suit])
+        self.deck = Deck()
+        self.deck.shuffle()
+        self.score_ranks = []
+        self.score_suits = []
+        for i in range(0, len(self.hand_ranks)):
+            card = self.deck.deal_card()
+
+            self.hand_ranks[i].setText(card.rank.__str__())
+            self.score_ranks.append(card.rank.value)
+            self.score_suits.append(card.suit.value)
+
+            if self.suitpixmaps[card.suit.value].isNull():
+                self.hand_suits[i].setText(card.suit.value)
             else:
-                self.suits[i].setPixmap(self.suitpixmaps[suit])
+                self.hand_suits[i].setPixmap(self.suitpixmaps[card.suit.value])
 
     def eval_hand(self):
-        """
-        for i in self.score_suits:
-            print(i)
-        for i in self.score_ranks:
-            print(i)
-        """
         score = Score(self.score_suits, self.score_ranks)
         score.eval_hand()
