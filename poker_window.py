@@ -12,7 +12,7 @@ class PokerWindow(QMainWindow):
         QMainWindow.__init__(self)
         self.mainWidget = QWidget(self)  # dummy to contain the layout manager
         self.setCentralWidget(self.mainWidget)
-        self.setWindowTitle('Poker')
+        self.setWindowTitle('Poker Hand Evaluation')
 
         self.grid = QGridLayout()
         self.mainWidget.setLayout(self.grid)
@@ -23,8 +23,7 @@ class PokerWindow(QMainWindow):
         self.score_ranks = []
         self.score_suits = []
 
-        self.deck = Deck()
-        self.deck.shuffle()
+        self.prep_deck()
 
         # Create the labels for the card ranks and suits:
         for i in range(0, len(self.hand_ranks)):
@@ -64,10 +63,15 @@ class PokerWindow(QMainWindow):
             self.hand_ranks[i].setFont(self.font)
             self.hand_ranks[i].setAlignment(Qt.AlignCenter)
 
-    def deal_new_hand(self):
+        # Create Textbox for instructions
+        self.textbox = QTextEdit()
+        self.textbox.setMaximumHeight(50)
+        self.textbox.setFont(self.font)
+        self.grid.addWidget(self.textbox, 3, 0, 1, 0)
 
-        self.deck = Deck()
-        self.deck.shuffle()
+    def deal_new_hand(self):
+        self.prep_deck()
+        self.textbox.clear()
         self.score_ranks = []
         self.score_suits = []
         for i in range(0, len(self.hand_ranks)):
@@ -84,4 +88,12 @@ class PokerWindow(QMainWindow):
 
     def eval_hand(self):
         score = Score(self.score_suits, self.score_ranks)
-        score.eval_hand()
+        self.textbox.setText(score.eval_hand())
+
+    def prep_deck(self):
+        self.deck = Deck()
+        self.deck.shuffle()
+
+    def trade_cards(self):
+        return self.textbox.setText("Traded cards")
+

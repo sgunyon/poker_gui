@@ -55,24 +55,24 @@ class Score:
             self.ranks.append(1)
 
     def eval_hand(self):
-        print("Hand evaluation:")
         if self.is_royal_flush():
-            print("Royal Flush!")
+            return "Royal Flush!"
         elif self.is_straight_flush():
-            print("Straight Flush!")
+            return "Straight Flush!"
         elif self.is_four_of_a_kind():
-            print("Four of a Kind!")
+            return "Four of a Kind!"
         elif self.is_full_house():
-            print("Full House!")
+            return "Full House!"
         elif self.is_flush():
-            print("Flush!")
+            return "Flush!"
         elif self.is_straight():
-            print("Straight!")
+            return "Straight!"
         elif self.is_three_of_a_kind():
-            print("Three of a Kind!")
+            return "Three of a Kind!"
         elif self.is_two_pair():
-            print("Two Pair!")
+            return "Two Pair!"
         elif self.is_pair():
-            print("Pair!")
+            return "Pair!"
         else:
-            print("High card")
+            return "High card"
+
