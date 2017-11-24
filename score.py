@@ -54,7 +54,7 @@ class Score:
         if all(x in self.ranks for x in range(2, 6)) and 14 in self.ranks:
             self.ranks.append(1)
 
-    def eval_hand(self):
+    def evaluate_hand(self):
         if self.is_royal_flush():
             return "Royal Flush!"
         elif self.is_straight_flush():
